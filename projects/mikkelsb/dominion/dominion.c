@@ -707,7 +707,7 @@ int feastCardEffect(struct gameState* state, int* currentPlayer, int* choice1, i
   while( *x == 1) {//Buy one card
 	if (supplyCount(*choice1, state) <= 0){
 	  if (DEBUG)
-	    printf("None of that card left, sorry!\n");
+	    printf("None of that card left, sorry! \n");
 
 	  if (DEBUG){
 	    printf("Cards Left: %d\n", supplyCount(*choice1, state));
