@@ -5,14 +5,30 @@
 
 char inputChar()
 {
-  // TODO: rewrite this function
-  return ;
+  int randomInt = rand() % 128;
+  return (char)randomInt;
+}
+
+char randomReset() {
+  int randomInt = rand() % 5;
+  switch (randomInt) {
+    case 0: return 'r';
+    case 1: return 'e';
+    case 2: return 's';
+    case 3: return 'e';
+    case 4: return 't';
+  }
 }
 
 char *inputString()
 {
-  // TODO: rewrite this function
-  return "";
+  char* randomString = malloc(6 * sizeof(char));
+  int i;
+  for (i = 0; i < 5; i++) {
+    randomString[i] = randomReset();
+  }
+  randomString[5] = '\0';
+  return randomString;
 }
 
 void testme()
