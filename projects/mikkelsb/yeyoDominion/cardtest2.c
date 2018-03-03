@@ -1,48 +1,33 @@
 #include "dominion.h"
-#include "dominion_helpers.h"
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <assert.h>
 
-
-int main()
-{
-    struct gameState test;
-    int k[10] = {adventurer, embargo, village, minion, mine, cutpurse, sea_hag, tribute, smithy, council_room};
-    int numPlayers = 2;
-    int seed = 1000;
-
-    int currentPlayer = 0;
-    //initialize game 
-    initializeGame(numPlayers, k, seed, &test);
-    printf("---------- Testing adventurer card ----------\n"); 
-  
-    int handCount = test.handCount[currentPlayer];
-    int deckCount = test.deckCount[currentPlayer];
-    int discardCount = test.discardCount[currentPlayer];
-
-    int temphand[1000] = {}; 
-    int z = 0;
-    //Set Up Deck
-    int deckCounter = test.deckCount[currentPlayer];
-    test.deck[currentPlayer][deckCounter - 1] = copper;
-    test.deck[currentPlayer][deckCounter - 2] = cutpurse;
-    test.deck[currentPlayer][deckCounter - 3] = silver;
-
-    //Test adventurer Card
-    adventurerCardEffect(0,temphand,z,currentPlayer,&test);
-    printf("Check Players State\n");
-    if(test.handCount[currentPlayer] != handCount + 1){
-      printf("handCount don't match Actual: %d Expected: %d\n",test.handCount[currentPlayer], handCount + 1);
+int check(int a, int b) {
+    printf("Comparing %d to %d... ", a, b);
+    if (a == b) {
+        printf("TEST PASSED\n");
+        return 1;
+    } else {
+        printf("TEST FAILED\n");
+        return 0;
     }
-    if(test.deckCount[currentPlayer] != deckCount - 3){
-      printf("deckCount don't match Actual: %d Expected: %d\n",test.deckCount[currentPlayer], deckCount - 3);
-    }
-    if(test.discardCount[currentPlayer] != discardCount + 1){
-      printf("discardCount don't match Actual: %d Expected: %d\n",test.discardCount[currentPlayer], discardCount + 1);
-    }
+}
 
-    printf("\n---------- Testing adventurer Successfully ----------\n"); 
+int main() {
+    struct gameState* state = newGame();
+    int* cards = kingdomCards(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+    initializeGame(4, cards, 1234, state);
+
+    printf("Testing smithy:\n");
+    cardEffect(smithy, 0, 0, 0, state, 4, 0);
+    printf("3 cards drawn? ");
+    check(state->handCount[0], 7);
+    printf("Which cards were drawn?---\n");
+    check(state->hand[0][4], 4);
+    check(state->hand[0][5], 4);
+    check(state->hand[0][6], 4);
+    
+    
     return 0;
 }

@@ -1,0 +1,3 @@
+Bugs:
+- In the smithy card action, my teammate didn't check if there are at least 3 cards in the deck before adding those to the player's hand. This will cause an error if there arent enough cards in the deck. 
+- A similar bug is in council room. If the if the player's deck doesn't have at least 4 cards, an exception will be thrown which is not handled. 

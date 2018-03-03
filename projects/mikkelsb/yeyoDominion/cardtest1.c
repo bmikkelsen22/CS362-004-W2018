@@ -1,32 +1,29 @@
 #include "dominion.h"
-#include "dominion_helpers.h"
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <assert.h>
 
+int check(int a, int b) {
+    printf("Comparing %d to %d... ", a, b);
+    if (a == b) {
+        printf("TEST PASSED\n");
+        return 1;
+    } else {
+        printf("TEST FAILED\n");
+        return 0;
+    }
+}
 
-int main()
-{
-    struct gameState test;
-    int k[10] = {adventurer, embargo, village, minion, mine, cutpurse, sea_hag, tribute, smithy, council_room};
-   	int numPlayers = 2;
-   	int seed = 1000;
+int main() {
+    struct gameState* state = newGame();
+    int* cards = kingdomCards(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+    initializeGame(4, cards, 1234, state);
 
-   	int currentPlayer = 0;
-   	//initialize game
-   	initializeGame(numPlayers, k, seed, &test);
-   	printf("---------- Testing smithy card ----------\n"); 
- 	
-   	int handCount = test.handCount[currentPlayer];
-   	int deckCount = test.deckCount[currentPlayer];
-   	
-   	//Test smithy card
-   	smithyCardEffect(currentPlayer,&test,0);
-   	printf("Check Players State\n");
-   	assert(test.handCount[currentPlayer] == handCount + 2);
-   	assert(test.deckCount[currentPlayer] == deckCount - 3);
-
-    printf("\n---------- Testing smithy card Successfully----------\n"); 
+    printf("Testing adventurer:\n");
+    cardEffect(adventurer, 0, 0, 0, state, 4, 0);
+    check(state->handCount[0], 5);
+    printf("Coins added to hand? ");
+    check(state->hand[0][3], copper);
+    
     return 0;
 }

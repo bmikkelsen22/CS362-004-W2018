@@ -1,42 +1,33 @@
+#include "dominion.h"
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <math.h>
-#include "dominion.h"
-#include "dominion_helpers.h"
-#include "rngs.h"
-#include <assert.h>
 
-int main()
-{
-    int seed = 1000;
-    int numPlayers = 2;
-	struct gameState test;
-	int k[10] = {adventurer, embargo, village, minion, mine, cutpurse, sea_hag, tribute, smithy, council_room};
+int check(int a, int b) {
+    printf("Comparing %d to %d... ", a, b);
+    if (a == b) {
+        printf("TEST PASSED\n");
+        return 1;
+    } else {
+        printf("TEST FAILED\n");
+        return 0;
+    }
+}
 
-	initializeGame(numPlayers, k, seed, &test);
-		
-	//Unit TEST 1: isGameOver Province cards is empty
-	printf("Unit TEST 1: isGameOver Province cards is empty \n");
-	test.supplyCount[province] = 0;
-	assert(isGameOver(&test) == 1);
-	
-	
-	//Unit TEST 2: isGameOver three supply pile are at 0
-	printf("Unit TEST 2: isGameOver three supply pile are at 0 \n");
-	test.supplyCount[province] = 0;
-	test.supplyCount[smithy] = 0;
-	test.supplyCount[adventurer] = 0;
-	assert(isGameOver(&test) == 1);
-	
-	//Unit TEST 2: isGameOver three supply pile are at 0
-	printf("Unit TEST 3: isGameOver, neither above \n");
-	test.supplyCount[province] = 5;
-	test.supplyCount[smithy] = 5;
-	test.supplyCount[adventurer] = 5;
-	assert(isGameOver(&test) == 0);
-	
-	printf("isGameOver Testing Successfully\n");
+int main() {
+    struct gameState* state = newGame();
+    int* cards = kingdomCards(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+    initializeGame(4, cards, 1234, state);
 
-	return 0;
+    printf("Testing updateCoins:\n");
+    updateCoins(0, state, 7);
+    check(state->coins, 11);
+
+    updateCoins(1, state, 2);
+    check(state->coins, 2);
+
+    updateCoins(2, state, 0);
+    check(state->coins, 0);
+    
+    return 0;
 }

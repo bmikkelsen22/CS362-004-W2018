@@ -1,94 +1,41 @@
+#include "dominion.h"
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <math.h>
-#include "dominion.h"
-#include "dominion_helpers.h"
-#include "rngs.h"
-#include <assert.h>
 
-int main()
-{
-    int seed = 1000;
-    int numPlayers = 2;
-	struct gameState test;
-	int k[10] = {adventurer, embargo, village, minion, mine, cutpurse, sea_hag, tribute, smithy, council_room};
+int check(int a, int b) {
+    printf("Comparing %d to %d... ", a, b);
+    if (a == b) {
+        printf("TEST PASSED\n");
+        return 1;
+    } else {
+        printf("TEST FAILED\n");
+        return 0;
+    }
+}
 
-	initializeGame(numPlayers, k, seed, &test);
-		
-	int currentPlayer = whoseTurn(&test);
+int main() {
+    struct gameState* state = newGame();
+    int* cards = kingdomCards(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+    initializeGame(4, cards, 1234, state);
 
-	//Unit TEST 1: discardCard-> last card in hand array is played
-	printf("Unit TEST 1: discardCard trashFlag < 1 \n");
-	//set currentPlayer's hand and deck
-	test.hand[currentPlayer][0] = silver;
-	test.hand[currentPlayer][1] = silver;
-	test.hand[currentPlayer][2] = silver;
-	test.hand[currentPlayer][3] = silver;
-	test.hand[currentPlayer][4] = silver;
-	test.handCount[currentPlayer] = 5;
-	int discardCount = test.discardCount[currentPlayer];
-	
-	discardCard(4, currentPlayer, &test, 0);
-	assert(test.handCount[currentPlayer] == 4);
-	if(test.discardCount[currentPlayer] != discardCount+1){
-      printf("discardCount don't match Actual: %d Expected: %d\n",test.discardCount[currentPlayer], discardCount+1);
-    }
-	
-	
-	//Unit TEST 2: discardCard only one card in hand
-	printf("Unit TEST 2: discardCard only one card in hand \n");
-	test.hand[currentPlayer][0] = copper;
-	test.handCount[currentPlayer] = 1;
-	discardCount = test.discardCount[currentPlayer];
-	
-	discardCard(1, currentPlayer, &test, 0);
-	
-	assert(test.handCount[currentPlayer] == 0);
-	if(test.discardCount[currentPlayer] != discardCount+1){
-      printf("discardCount don't match Actual: %d Expected: %d\n",test.discardCount[currentPlayer], discardCount+1);
-    }
-	
-	//Unit TEST 3: discardCard trashFlag <1
-	printf("Unit TEST 3: Unit TEST 3: discardCard trashFlag <1 \n");
-	test.hand[currentPlayer][0] = silver;
-	test.hand[currentPlayer][1] = silver;
-	test.hand[currentPlayer][2] = silver;
-	test.hand[currentPlayer][3] = silver;
-	test.hand[currentPlayer][4] = silver;
-	test.handCount[currentPlayer] = 5;
-	int playedCardCount = test.playedCardCount;
-	discardCount = test.discardCount[currentPlayer];
-	
-	discardCard(2, currentPlayer, &test, 0);
-	assert(test.handCount[currentPlayer] == 4);
-	if(test.discardCount[currentPlayer] != discardCount+1){
-      printf("discardCount don't match Actual: %d Expected: %d\n",test.discardCount[currentPlayer], discardCount+1);
-    }
-	//assert(test.playedCardCount == playedCardCount+1);
-	if(test.playedCardCount != playedCardCount + 1){
-      printf("playedCardCount don't match Actual: %d Expected: %d\n", test.playedCardCount, playedCardCount+1);
-    }
-	
-	//Unit TEST 4: discardCard
-	printf("Unit TEST 4: Unit TEST 3: discardCard trashFlag <1 \n");
-	test.hand[currentPlayer][0] = silver;
-	test.hand[currentPlayer][1] = silver;
-	test.hand[currentPlayer][2] = silver;
-	test.hand[currentPlayer][3] = silver;
-	test.hand[currentPlayer][4] = silver;
-	test.handCount[currentPlayer] = 5;
-	discardCount = test.discardCount[currentPlayer];
-	int lastCard = test.hand[currentPlayer][test.handCount[currentPlayer] - 1];
-	
-	
-	discardCard(2, currentPlayer, &test, 1);
-	assert(test.handCount[currentPlayer] == 4);
-	if(test.discardCount[currentPlayer] != discardCount + 1){
-      printf("discardCount don't match Actual: %d Expected: %d\n", test.discardCount[currentPlayer], discardCount+1);
-    }
-	assert(test.hand[currentPlayer][2] == lastCard);
-	printf("discardCard Testing Successfully\n");
+    printf("Testing gainCard: to deck\n");
+    gainCard(smithy, state, 1, 0);
+    printf("Card added to deck? ");
+    check(state->deckCount[0], 5);
+    printf("Card was smithy? ");
+    check(state->deck[0][4], 4);
+    printf("Smithy supply decreased? ");
+    check(state->supplyCount[smithy], -1);
 
-	return 0;
+    printf("Testing gainCard: to discard\n");
+    gainCard(smithy, state, 0, 0);
+    printf("Card added to discard? ");
+    check(state->discardCount[0], 0);
+    printf("Card was smithy? ");
+    check(state->discard[0][4], 0);
+    printf("Smithy supply decreased? ");
+    check(state->supplyCount[smithy], -1);
+    
+    return 0;
 }
