@@ -2,14 +2,6 @@
 
 import junit.framework.TestCase;
 
-//You can use this as a skeleton for your 3 different test approach
-//It is an optional to use this file, you can generate your own test file(s) to test the target function!
-// Again, it is up to you to use this file or not!
-
-
-
-
-
 public class UrlValidatorTest extends TestCase {
 
 
@@ -17,7 +9,6 @@ public class UrlValidatorTest extends TestCase {
       super(testName);
    }
 
-   
    
    public void testManualTest()
    {
@@ -104,6 +95,23 @@ public class UrlValidatorTest extends TestCase {
 
    }
    
+   public void randomTestIsValid()
+   {
+	   UrlValidator urlValidator = new UrlValidator();
+	   boolean pass =true;
+	   for (int i = 0; i < 200; i++ ) {
+		   ResultPair testcase = UrlValidatorRandomTestProvider.getRandTestCase();
+		   boolean result = urlValidator.isValid(testcase.item);
+		   if (result != testcase.valid) {
+			   System.out.println("FAIL: " + testcase.item);
+			   System.out.println("Expected: " + testcase.valid + "  Actual: " + result);
+			   pass = false;
+		   } else {
+			   System.out.println("\n-PASS: " + testcase.item);
+		   }
+		}
+	   	assertEquals("Test Failed", pass, true);
+   }
 
 
 }
