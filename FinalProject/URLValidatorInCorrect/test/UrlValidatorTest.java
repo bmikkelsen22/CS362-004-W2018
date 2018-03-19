@@ -95,7 +95,7 @@ public class UrlValidatorTest extends TestCase {
 
    }
    
-   public void randomTestIsValid()
+   public void testIsValidUsingRandomTestProvider()
    {
 	   UrlValidator urlValidator = new UrlValidator();
 	   boolean pass =true;
